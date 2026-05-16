@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bin Azeem | Creative Designer Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'outfit': ['Outfit', 'sans-serif'],
+                        'space': ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        'neon-green': '#a3e635',
+                        'neon-lime': '#84cc16',
+                        'dark': '#0a0a0a',
+                        'darker': '#050505',
+                        'card': '#111111',
+                        'card-hover': '#1a1a1a',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #050505;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #a3e635; border-radius: 4px; }
+
+        /* Noise Texture Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* Custom Cursor */
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background: #a3e635;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 1px solid rgba(163, 230, 53, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease, width 0.2s, height 0.2s;
+        }
+        .cursor-outline.hover {
+            width: 60px; height: 60px;
+            background: rgba(163, 230, 53, 0.1);
+        }
+
+        /* Hero Canvas */
+        #hero-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+        }
+
+        /* Glitch Effect */
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+        .glitch-text::before {
+            animation: glitch-1 2s infinite linear alternate-reverse;
+            color: #a3e635;
+            z-index: -1;
+        }
+        .glitch-text::after {
+            animation: glitch-2 3s infinite linear alternate-reverse;
+            color: #84cc16;
+            z-index: -2;
+        }
+        @keyframes glitch-1 {
+            0%, 100% { clip-path: inset(0 0 95% 0); transform: translate(-2px, 0); }
+            20% { clip-path: inset(30% 0 50% 0); transform: translate(2px, 0); }
+            40% { clip-path: inset(60% 0 20% 0); transform: translate(-1px, 0); }
+            60% { clip-path: inset(10% 0 80% 0); transform: translate(1px, 0); }
+            80% { clip-path: inset(80% 0 5% 0); transform: translate(-2px, 0); }
+        }
+        @keyframes glitch-2 {
+            0%, 100% { clip-path: inset(95% 0 0 0); transform: translate(2px, 0); }
+            20% { clip-path: inset(50% 0 30% 0); transform: translate(-2px, 0); }
+            40% { clip-path: inset(20% 0 60% 0); transform: translate(1px, 0); }
+            60% { clip-path: inset(80% 0 10% 0); transform: translate(-1px, 0); }
+            80% { clip-path: inset(5% 0 80% 0); transform: translate(2px, 0); }
+        }
+
+        /* Magnetic Button */
+        .magnetic-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 40px;
+            background: transparent;
+            border: 2px solid #a3e635;
+            color: #a3e635;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            overflow: hidden;
+            transition: color 0.4s ease;
+        }
+        .magnetic-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: #a3e635;
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+        .magnetic-btn:hover::before { left: 0; }
+        .magnetic-btn:hover { color: #050505; }
+
+        /* Project Card */
+        .project-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: #111;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .project-card:hover {
+            transform: translateY(-10px);
+        }
+        .project-card .card-image {
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .project-card:hover .card-image {
+            transform: scale(1.1);
+        }
+        .project-card .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.3) 50%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .project-card:hover .card-overlay {
+            opacity: 1;
+        }
+        .project-card .card-content {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            padding: 30px;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .project-card:hover .card-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Marquee */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Skill Bar Animation */
+        .skill-track {
+            height: 4px;
+            background: #1a1a1a;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .skill-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #a3e635, #84cc16);
+            border-radius: 2px;
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-anim { animation: float 6s ease-in-out infinite; }
+        .float-anim-delay { animation: float 6s ease-in-out 2s infinite; }
+
+        /* Glow Effect */
+        .glow-green {
+            box-shadow: 0 0 40px rgba(163, 230, 53, 0.3), 0 0 80px rgba(163, 230, 53, 0.1);
+        }
+
+        /* Section Reveal */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(60px);
+        }
+
+        /* Navigation */
+        .nav-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        /* Service Card */
+        .service-card {
+            background: linear-gradient(135deg, #111 0%, #0a0a0a 100%);
+            border: 1px solid #222;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .service-card:hover {
+            border-color: #a3e635;
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(163, 230, 53, 0.1);
+        }
+
+        /* Text Scramble */
+        .scramble-text {
+            font-family: 'Space Grotesk', monospace;
+        }
+
+        /* Loading Screen */
+        .loader {
+            position: fixed;
+            inset: 0;
+            background: #050505;
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .loader-bar {
+            width: 200px;
+            height: 2px;
+            background: #1a1a1a;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .loader-progress {
+            height: 100%;
+            background: #a3e635;
+            width: 0;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Noise Overlay -->
+    <div class="noise-overlay"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot hidden md:block"></div>
+    <div class="cursor-outline hidden md:block"></div>
+
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="text-4xl font-bold font-space tracking-widest text-white">BIN AZEEM</div>
+        <div class="text-sm text-gray-500 mt-2 font-space tracking-wider">CREATIVE DESIGNER</div>
+        <div class="loader-bar">
+            <div class="loader-progress" id="loader-progress"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 nav-blur bg-dark/80 border-b border-white/5 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="#hero" class="text-2xl font-bold font-space tracking-wider text-white hover:text-neon-green transition-colors">
+                BIN<span class="text-neon-green">AZEEM</span>
+            </a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#about" class="text-sm font-medium text-gray-400 hover:text-neon-green transition-colors tracking-wide">ABOUT</a>
+                <a href="#services" class="text-sm font-medium text-gray-400 hover:text-neon-green transition-colors tracking-wide">SERVICES</a>
+                <a href="#work" class="text-sm font-medium text-gray-400 hover:text-neon-green transition-colors tracking-wide">WORK</a>
+                <a href="#skills" class="text-sm font-medium text-gray-400 hover:text-neon-green transition-colors tracking-wide">SKILLS</a>
+                <a href="#contact" class="magnetic-btn text-xs py-3 px-6">LET'S TALK</a>
+            </div>
+            <button class="md:hidden text-white" id="mobile-menu-btn">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden bg-dark/95 border-t border-white/5" id="mobile-menu">
+            <div class="px-6 py-6 flex flex-col gap-4">
+                <a href="#about" class="text-lg font-medium text-gray-300 hover:text-neon-green transition-colors">About</a>
+                <a href="#services" class="text-lg font-medium text-gray-300 hover:text-neon-green transition-colors">Services</a>
+                <a href="#work" class="text-lg font-medium text-gray-300 hover:text-neon-green transition-colors">Work</a>
+                <a href="#skills" class="text-lg font-medium text-gray-300 hover:text-neon-green transition-colors">Skills</a>
+                <a href="#contact" class="text-lg font-medium text-neon-green">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <canvas id="hero-canvas"></canvas>
+
+        <!-- Gradient Orbs -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-neon-green/20 rounded-full blur-[120px] float-anim"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-neon-lime/10 rounded-full blur-[100px] float-anim-delay"></div>
+
+        <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+            <div class="mb-6 overflow-hidden">
+                <p class="text-neon-green font-space text-sm tracking-[0.3em] uppercase hero-subtitle opacity-0">Creative Designer & Visual Artist</p>
+            </div>
+
+            <h1 class="text-6xl md:text-8xl lg:text-9xl font-bold font-outfit leading-none mb-8 hero-title">
+                <span class="block overflow-hidden">
+                    <span class="inline-block hero-char">BIN</span>
+                </span>
+                <span class="block overflow-hidden">
+                    <span class="inline-block text-neon-green glitch-text hero-char" data-text="AZEEM">AZEEM</span>
+                </span>
+            </h1>
+
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-12 hero-desc opacity-0 font-light leading-relaxed">
+                Crafting visual experiences that captivate, communicate, and convert. 
+                Specializing in brand identity, social media design, and digital marketing visuals.
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center hero-cta opacity-0">
+                <a href="#work" class="magnetic-btn">VIEW MY WORK</a>
+                <a href="#contact" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2 text-sm tracking-wide">
+                    <span>GET IN TOUCH</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
+            <span class="text-xs tracking-widest text-gray-500">SCROLL</span>
+            <div class="w-px h-12 bg-gradient-to-b from-neon-green to-transparent"></div>
+        </div>
+    </section>
+
+    <!-- Marquee Section -->
+    <div class="py-8 border-y border-white/5 bg-dark/50">
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <span class="text-4xl md:text-6xl font-bold font-space text-transparent stroke-text mx-8" style="-webkit-text-stroke: 1px #333;">GRAPHIC DESIGN</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <span class="text-4xl md:text-6xl font-bold font-space text-white mx-8">BRAND IDENTITY</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <span class="text-4xl md:text-6xl font-bold font-space text-transparent stroke-text mx-8" style="-webkit-text-stroke: 1px #333;">SOCIAL MEDIA</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <span class="text-4xl md:text-6xl font-bold font-space text-white mx-8">MOTION GRAPHICS</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <span class="text-4xl md:text-6xl font-bold font-space text-transparent stroke-text mx-8" style="-webkit-text-stroke: 1px #333;">DIGITAL MARKETING</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <span class="text-4xl md:text-6xl font-bold font-space text-white mx-8">VIDEO EDITING</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <!-- Duplicate for seamless loop -->
+                <span class="text-4xl md:text-6xl font-bold font-space text-transparent stroke-text mx-8" style="-webkit-text-stroke: 1px #333;">GRAPHIC DESIGN</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <span class="text-4xl md:text-6xl font-bold font-space text-white mx-8">BRAND IDENTITY</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <span class="text-4xl md:text-6xl font-bold font-space text-transparent stroke-text mx-8" style="-webkit-text-stroke: 1px #333;">SOCIAL MEDIA</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <span class="text-4xl md:text-6xl font-bold font-space text-white mx-8">MOTION GRAPHICS</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <span class="text-4xl md:text-6xl font-bold font-space text-transparent stroke-text mx-8" style="-webkit-text-stroke: 1px #333;">DIGITAL MARKETING</span>
+                <span class="text-neon-green mx-4">✦</span>
+                <span class="text-4xl md:text-6xl font-bold font-space text-white mx-8">VIDEO EDITING</span>
+                <span class="text-neon-green mx-4">✦</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <section id="about" class="py-32 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div class="reveal-up">
+                    <p class="text-neon-green font-space text-sm tracking-[0.3em] uppercase mb-4">About Me</p>
+                    <h2 class="text-4xl md:text-6xl font-bold font-outfit mb-8 leading-tight">
+                        Designing the <span class="text-neon-green">Future</span> of Visual Communication
+                    </h2>
+                    <div class="space-y-6 text-gray-400 text-lg leading-relaxed">
+                        <p>
+                            With over 5 years of experience in the creative industry, I've had the privilege of working 
+                            with diverse brands across Pakistan and beyond. My approach combines strategic thinking with 
+                            artistic execution to deliver designs that don't just look good—they perform.
+                        </p>
+                        <p>
+                            From crafting compelling brand identities for startups to managing complete social media 
+                            visual strategies for established businesses, I bring a 360-degree perspective to every project.
+                        </p>
+                    </div>
+                    <div class="flex gap-8 mt-10">
+                        <div>
+                            <div class="text-4xl font-bold text-neon-green font-space">150+</div>
+                            <div class="text-sm text-gray-500 mt-1">Projects Completed</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-neon-green font-space">50+</div>
+                            <div class="text-sm text-gray-500 mt-1">Happy Clients</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-bold text-neon-green font-space">5+</div>
+                            <div class="text-sm text-gray-500 mt-1">Years Experience</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative reveal-up">
+                    <div class="relative rounded-2xl overflow-hidden aspect-square">
+                        <img src="/mnt/agents/upload/Mehran-1.jpg" alt="Bin Azeem" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent"></div>
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 w-48 h-48 border-2 border-neon-green/30 rounded-2xl"></div>
+                    <div class="absolute -top-6 -left-6 w-32 h-32 bg-neon-green/10 rounded-full blur-2xl"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-32 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20 reveal-up">
+                <p class="text-neon-green font-space text-sm tracking-[0.3em] uppercase mb-4">What I Do</p>
+                <h2 class="text-4xl md:text-6xl font-bold font-outfit">360° <span class="text-neon-green">Solutions</span></h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Service 1 -->
+                <div class="service-card rounded-2xl p-8 reveal-up group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-green/10 flex items-center justify-center mb-6 group-hover:bg-neon-green/20 transition-colors">
+                        <i data-lucide="palette" class="w-7 h-7 text-neon-green"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 font-outfit">Graphic Designing</h3>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Logo Design</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Social Media Design</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Brand Identity</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Print Design</li>
+                    </ul>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="service-card rounded-2xl p-8 reveal-up group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-green/10 flex items-center justify-center mb-6 group-hover:bg-neon-green/20 transition-colors">
+                        <i data-lucide="video" class="w-7 h-7 text-neon-green"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 font-outfit">Video Editing</h3>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Video Editing</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Motion Graphics</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Color Grading</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Transitions & Effects</li>
+                    </ul>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="service-card rounded-2xl p-8 reveal-up group">
+                    <div class="w-14 h-14 rounded-xl bg-neon-green/10 flex items-center justify-center mb-6 group-hover:bg-neon-green/20 transition-colors">
+                        <i data-lucide="trending-up" class="w-7 h-7 text-neon-green"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 font-outfit">Digital Marketing</h3>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Social Media Marketing</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>SEO Optimization</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Google Ads</li>
+                        <li class="flex items-center gap-2"><span class="w-1 h-1 bg-neon-green rounded-full"></span>Content Marketing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Work/Portfolio Section -->
+    <section id="work" class="py-32 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-20 reveal-up">
+                <div>
+                    <p class="text-neon-green font-space text-sm tracking-[0.3em] uppercase mb-4">Portfolio</p>
+                    <h2 class="text-4xl md:text-6xl font-bold font-outfit">Selected <span class="text-neon-green">Works</span></h2>
+                </div>
+                <p class="text-gray-400 mt-4 md:mt-0 max-w-md">A curated collection of projects showcasing brand identities, social media campaigns, and marketing visuals.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Project 1 -->
+                <div class="project-card aspect-[4/5] reveal-up cursor-pointer" onclick="openLightbox(0)">
+                    <img src="/mnt/agents/upload/360--Solutions.png" alt="360 Solutions" class="card-image w-full h-full object-cover">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-neon-green text-xs font-space tracking-wider uppercase">Brand Identity</span>
+                        <h3 class="text-2xl font-bold mt-2 font-outfit">360 Solutions</h3>
+                        <p class="text-gray-400 text-sm mt-2">Complete brand identity and service showcase design</p>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="project-card aspect-[4/5] reveal-up cursor-pointer" onclick="openLightbox(1)">
+                    <img src="/mnt/agents/upload/Burger-Presentation.png" alt="Cheese Burger Branding" class="card-image w-full h-full object-cover">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-neon-green text-xs font-space tracking-wider uppercase">Food Branding</span>
+                        <h3 class="text-2xl font-bold mt-2 font-outfit">Cheese Burger</h3>
+                        <p class="text-gray-400 text-sm mt-2">Restaurant branding and mockup presentation</p>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="project-card aspect-[4/5] reveal-up cursor-pointer" onclick="openLightbox(2)">
+                    <img src="/mnt/agents/upload/Eid-Mubarak.png" alt="Eid Mubarak" class="card-image w-full h-full object-cover">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-neon-green text-xs font-space tracking-wider uppercase">Social Media</span>
+                        <h3 class="text-2xl font-bold mt-2 font-outfit">Eid Mubarak</h3>
+                        <p class="text-gray-400 text-sm mt-2">Festival greeting design with creative typography</p>
+                    </div>
+                </div>
+
+                <!-- Project 4 -->
+                <div class="project-card aspect-[4/5] reveal-up cursor-pointer" onclick="openLightbox(3)">
+                    <img src="/mnt/agents/upload/square-1-1-1773738746306.jpeg" alt="Azadi Sale" class="card-image w-full h-full object-cover">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-neon-green text-xs font-space tracking-wider uppercase">Marketing</span>
+                        <h3 class="text-2xl font-bold mt-2 font-outfit">Azadi Sale</h3>
+                        <p class="text-gray-400 text-sm mt-2">Independence Day promotional campaign design</p>
+                    </div>
+                </div>
+
+                <!-- Project 5 -->
+                <div class="project-card aspect-[4/5] reveal-up cursor-pointer" onclick="openLightbox(4)">
+                    <img src="/mnt/agents/upload/IMG-20260401-WA0003.jpg" alt="Voltaco Energy" class="card-image w-full h-full object-cover">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-neon-green text-xs font-space tracking-wider uppercase">Product Design</span>
+                        <h3 class="text-2xl font-bold mt-2 font-outfit">Voltaco Energy</h3>
+                        <p class="text-gray-400 text-sm mt-2">Smart battery product marketing visuals</p>
+                    </div>
+                </div>
+
+                <!-- Project 6 -->
+                <div class="project-card aspect-[4/5] reveal-up cursor-pointer" onclick="openLightbox(5)">
+                    <img src="/mnt/agents/upload/IMG-20260401-WA0007.jpg" alt="Jilani Welfare" class="card-image w-full h-full object-cover">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-neon-green text-xs font-space tracking-wider uppercase">Non-Profit</span>
+                        <h3 class="text-2xl font-bold mt-2 font-outfit">Jilani Welfare</h3>
+                        <p class="text-gray-400 text-sm mt-2">Charity campaign and donation drive designs</p>
+                    </div>
+                </div>
+
+                <!-- Project 7 -->
+                <div class="project-card aspect-[4/5] reveal-up cursor-pointer" onclick="openLightbox(6)">
+                    <img src="/mnt/agents/upload/IMG-20260327-WA0005.jpg" alt="Consultoria Hub" class="card-image w-full h-full object-cover">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-neon-green text-xs font-space tracking-wider uppercase">Corporate</span>
+                        <h3 class="text-2xl font-bold mt-2 font-outfit">Consultoria Hub</h3>
+                        <p class="text-gray-400 text-sm mt-2">AI marketing agency branding and social content</p>
+                    </div>
+                </div>
+
+                <!-- Project 8 -->
+                <div class="project-card aspect-[4/5] reveal-up cursor-pointer" onclick="openLightbox(7)">
+                    <img src="/mnt/agents/upload/IMG-20250909-WA0007.jpg" alt="BrandTee" class="card-image w-full h-full object-cover">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-neon-green text-xs font-space tracking-wider uppercase">E-Commerce</span>
+                        <h3 class="text-2xl font-bold mt-2 font-outfit">BrandTee</h3>
+                        <p class="text-gray-400 text-sm mt-2">Custom T-shirt brand visual identity</p>
+                    </div>
+                </div>
+
+                <!-- Project 9 -->
+                <div class="project-card aspect-[4/5] reveal-up cursor-pointer" onclick="openLightbox(8)">
+                    <img src="/mnt/agents/upload/IMG-20250909-WA0010.jpg" alt="Eid Holidays" class="card-image w-full h-full object-cover">
+                    <div class="card-overlay"></div>
+                    <div class="card-content">
+                        <span class="text-neon-green text-xs font-space tracking-wider uppercase">Announcement</span>
+                        <h3 class="text-2xl font-bold mt-2 font-outfit">Eid Holidays</h3>
+                        <p class="text-gray-400 text-sm mt-2">Business closure announcement design</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-32 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-16">
+                <div class="reveal-up">
+                    <p class="text-neon-green font-space text-sm tracking-[0.3em] uppercase mb-4">Expertise</p>
+                    <h2 class="text-4xl md:text-5xl font-bold font-outfit mb-8">Skills & <span class="text-neon-green">Tools</span></h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-12">
+                        Proficient in industry-standard design software with a deep understanding of visual 
+                        hierarchy, color theory, and brand strategy.
+                    </p>
+
+                    <div class="space-y-8">
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Adobe Photoshop</span>
+                                <span class="text-neon-green font-space">95%</span>
+                            </div>
+                            <div class="skill-track">
+                                <div class="skill-fill" data-width="95"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Adobe Illustrator</span>
+                                <span class="text-neon-green font-space">90%</span>
+                            </div>
+                            <div class="skill-track">
+                                <div class="skill-fill" data-width="90"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Adobe Premiere Pro</span>
+                                <span class="text-neon-green font-space">85%</span>
+                            </div>
+                            <div class="skill-track">
+                                <div class="skill-fill" data-width="85"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">After Effects</span>
+                                <span class="text-neon-green font-space">80%</span>
+                            </div>
+                            <div class="skill-track">
+                                <div class="skill-fill" data-width="80"></div>
+                            </div>
+                        </div>
+
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Figma</span>
+                                <span class="text-neon-green font-space">75%</span>
+                            </div>
+                            <div class="skill-track">
+                                <div class="skill-fill" data-width="75"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative reveal-up">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-card rounded-2xl p-6 border border-white/5 hover:border-neon-green/30 transition-colors">
+                            <i data-lucide="pen-tool" class="w-8 h-8 text-neon-green mb-4"></i>
+                            <h4 class="font-bold mb-2">Vector Art</h4>
+                            <p class="text-sm text-gray-400">Precision vector illustrations and logo design</p>
+                        </div>
+                        <div class="bg-card rounded-2xl p-6 border border-white/5 hover:border-neon-green/30 transition-colors mt-8">
+                            <i data-lucide="layers" class="w-8 h-8 text-neon-green mb-4"></i>
+                            <h4 class="font-bold mb-2">UI/UX Design</h4>
+                            <p class="text-sm text-gray-400">User-centered interface design</p>
+                        </div>
+                        <div class="bg-card rounded-2xl p-6 border border-white/5 hover:border-neon-green/30 transition-colors">
+                            <i data-lucide="camera" class="w-8 h-8 text-neon-green mb-4"></i>
+                            <h4 class="font-bold mb-2">Photo Editing</h4>
+                            <p class="text-sm text-gray-400">Advanced retouching and manipulation</p>
+                        </div>
+                        <div class="bg-card rounded-2xl p-6 border border-white/5 hover:border-neon-green/30 transition-colors mt-8">
+                            <i data-lucide="film" class="w-8 h-8 text-neon-green mb-4"></i>
+                            <h4 class="font-bold mb-2">Motion Design</h4>
+                            <p class="text-sm text-gray-400">Animated graphics and video content</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-32 px-6 relative">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="reveal-up">
+                <p class="text-neon-green font-space text-sm tracking-[0.3em] uppercase mb-4">Get In Touch</p>
+                <h2 class="text-4xl md:text-7xl font-bold font-outfit mb-8">Let's Create <span class="text-neon-green">Together</span></h2>
+                <p class="text-gray-400 text-lg mb-12 max-w-2xl mx-auto">
+                    Have a project in mind? Let's discuss how we can bring your vision to life with 
+                    stunning visuals and strategic design.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+                    <a href="https://wa.me/923122555913" target="_blank" class="magnetic-btn flex items-center gap-3">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        WhatsApp Me
+                    </a>
+                    <a href="mailto:contact@binazeemgfx.com" class="text-gray-400 hover:text-white transition-colors flex items-center gap-2">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                        contact@binazeemgfx.com
+                    </a>
+                </div>
+
+                <div class="flex justify-center gap-6">
+                    <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-neon-green hover:text-neon-green transition-all hover:scale-110">
+                        <i data-lucide="facebook" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-neon-green hover:text-neon-green transition-all hover:scale-110">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-neon-green hover:text-neon-green transition-all hover:scale-110">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-neon-green hover:text-neon-green transition-all hover:scale-110">
+                        <i data-lucide="dribbble" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-neon-green hover:text-neon-green transition-all hover:scale-110">
+                        <i data-lucide="youtube" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-2xl font-bold font-space tracking-wider">
+                BIN<span class="text-neon-green">AZEEM</span>
+            </div>
+            <p class="text-gray-500 text-sm">© 2026 Bin Azeem. All rights reserved.</p>
+            <div class="flex gap-6 text-sm text-gray-500">
+                <a href="#" class="hover:text-neon-green transition-colors">Privacy</a>
+                <a href="#" class="hover:text-neon-green transition-colors">Terms</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 hidden items-center justify-center p-6">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white hover:text-neon-green transition-colors">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <button onclick="prevImage()" class="absolute left-6 text-white hover:text-neon-green transition-colors">
+            <i data-lucide="chevron-left" class="w-10 h-10"></i>
+        </button>
+        <button onclick="nextImage()" class="absolute right-6 text-white hover:text-neon-green transition-colors">
+            <i data-lucide="chevron-right" class="w-10 h-10"></i>
+        </button>
+        <img id="lightbox-img" src="" alt="" class="max-w-full max-h-[85vh] object-contain rounded-lg">
+        <div id="lightbox-caption" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-center">
+            <h3 class="text-xl font-bold text-white" id="lightbox-title"></h3>
+            <p class="text-gray-400 text-sm mt-1" id="lightbox-desc"></p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Project Data for Lightbox
+        const projects = [
+            { src: '/mnt/agents/upload/360--Solutions.png', title: '360 Solutions', desc: 'Complete brand identity and service showcase design' },
+            { src: '/mnt/agents/upload/Burger-Presentation.png', title: 'Cheese Burger', desc: 'Restaurant branding and mockup presentation' },
+            { src: '/mnt/agents/upload/Eid-Mubarak.png', title: 'Eid Mubarak', desc: 'Festival greeting design with creative typography' },
+            { src: '/mnt/agents/upload/square-1-1-1773738746306.jpeg', title: 'Azadi Sale', desc: 'Independence Day promotional campaign design' },
+            { src: '/mnt/agents/upload/IMG-20260401-WA0003.jpg', title: 'Voltaco Energy', desc: 'Smart battery product marketing visuals' },
+            { src: '/mnt/agents/upload/IMG-20260401-WA0007.jpg', title: 'Jilani Welfare', desc: 'Charity campaign and donation drive designs' },
+            { src: '/mnt/agents/upload/IMG-20260327-WA0005.jpg', title: 'Consultoria Hub', desc: 'AI marketing agency branding and social content' },
+            { src: '/mnt/agents/upload/IMG-20250909-WA0007.jpg', title: 'BrandTee', desc: 'Custom T-shirt brand visual identity' },
+            { src: '/mnt/agents/upload/IMG-20250909-WA0010.jpg', title: 'Eid Holidays', desc: 'Business closure announcement design' }
+        ];
+
+        let currentImageIndex = 0;
+
+        function openLightbox(index) {
+            currentImageIndex = index;
+            updateLightbox();
+            document.getElementById('lightbox').classList.remove('hidden');
+            document.getElementById('lightbox').classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.add('hidden');
+            document.getElementById('lightbox').classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        function updateLightbox() {
+            const project = projects[currentImageIndex];
+            document.getElementById('lightbox-img').src = project.src;
+            document.getElementById('lightbox-title').textContent = project.title;
+            document.getElementById('lightbox-desc').textContent = project.desc;
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % projects.length;
+            updateLightbox();
+        }
+
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + projects.length) % projects.length;
+            updateLightbox();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('lightbox').classList.contains('hidden')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') nextImage();
+            if (e.key === 'ArrowLeft') prevImage();
+        });
+
+        // Loader Animation
+        window.addEventListener('load', () => {
+            const progress = document.getElementById('loader-progress');
+            let width = 0;
+            const interval = setInterval(() => {
+                width += Math.random() * 30;
+                if (width >= 100) {
+                    width = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        gsap.to('#loader', {
+                            opacity: 0,
+                            duration: 0.8,
+                            ease: 'power2.inOut',
+                            onComplete: () => {
+                                document.getElementById('loader').style.display = 'none';
+                                initHeroAnimations();
+                            }
+                        });
+                    }, 300);
+                }
+                progress.style.width = width + '%';
+            }, 100);
+        });
+
+        // Hero Animations
+        function initHeroAnimations() {
+            const tl = gsap.timeline();
+
+            tl.to('.hero-subtitle', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power3.out'
+            })
+            .to('.hero-char', {
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                stagger: 0.1,
+                ease: 'power3.out'
+            }, '-=0.4')
+            .to('.hero-desc', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power3.out'
+            }, '-=0.6')
+            .to('.hero-cta', {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power3.out'
+            }, '-=0.4');
+        }
+
+        // Set initial states for hero elements
+        gsap.set('.hero-char', { y: 100, opacity: 0 });
+        gsap.set('.hero-subtitle', { opacity: 0, y: 20 });
+        gsap.set('.hero-desc', { opacity: 0, y: 20 });
+        gsap.set('.hero-cta', { opacity: 0, y: 20 });
+
+        // ScrollTrigger Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Reveal animations
+        gsap.utils.toArray('.reveal-up').forEach((elem) => {
+            gsap.to(elem, {
+                scrollTrigger: {
+                    trigger: elem,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                },
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power3.out'
+            });
+        });
+
+        // Skill bars animation
+        gsap.utils.toArray('.skill-fill').forEach((bar) => {
+            const width = bar.getAttribute('data-width');
+            gsap.to(bar, {
+                scrollTrigger: {
+                    trigger: bar,
+                    start: 'top 90%',
+                    toggleActions: 'play none none none'
+                },
+                width: width + '%',
+                duration: 1.5,
+                ease: 'power3.out'
+            });
+        });
+
+        // Navbar scroll effect
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            const currentScroll = window.pageYOffset;
+
+            if (currentScroll > 100) {
+                navbar.classList.add('bg-dark/95');
+            } else {
+                navbar.classList.remove('bg-dark/95');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Custom Cursor
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            cursorDot.style.left = posX + 'px';
+            cursorDot.style.top = posY + 'px';
+
+            cursorOutline.animate({
+                left: posX + 'px',
+                top: posY + 'px'
+            }, { duration: 500, fill: 'forwards' });
+        });
+
+        // Cursor hover effect
+        document.querySelectorAll('a, button, .project-card').forEach(el => {
+            el.addEventListener('mouseenter', () => cursorOutline.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hover'));
+        });
+
+        // Hero Canvas Animation - Particle Network
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = 'rgba(163, 230, 53, 0.5)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.min(100, Math.floor(canvas.width * canvas.height / 15000));
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+        initParticles();
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((particle, i) => {
+                particle.update();
+                particle.draw();
+
+                // Draw connections
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[j].x - particle.x;
+                    const dy = particles[j].y - particle.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 150) {
+                        ctx.strokeStyle = `rgba(163, 230, 53, ${0.15 * (1 - distance / 150)})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particle.x, particle.y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            animationId = requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Magnetic Button Effect
+        document.querySelectorAll('.magnetic-btn').forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+
+                btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = 'translate(0, 0)';
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                }
+            });
+        });
+
+        // Parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.float-anim, .float-anim-delay');
+            parallaxElements.forEach((el, i) => {
+                const speed = 0.5 + (i * 0.2);
+                el.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
